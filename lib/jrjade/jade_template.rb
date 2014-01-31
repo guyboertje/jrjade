@@ -8,13 +8,14 @@ module JrJade
       true
     end
 
-    def initialize_engine; end
+    def initialize_engine
+    end
 
     def prepare
     end
 
     def evaluate(scope, locals, &block)
-      context = TiltJadeModel.hashify(scope, locals)
+      context = ContextModel.hashify(scope, locals)
       JadeEngine.render(file, context, options)
     end
 
