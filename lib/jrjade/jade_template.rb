@@ -2,7 +2,7 @@ require "tilt/template"
 
 module JrJade
   class JadeTemplate < Tilt::Template
-    self.metadata[:mime_type] = 'text/html'
+    self.default_mime_type = 'text/html'
 
     def self.engine_initialized?
       true
