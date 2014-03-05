@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "version"
+require 'jrjade/version'
 
 Gem::Specification.new do |s|
   s.name        = "jrjade"
-  s.version     = Jrjade::VERSION
+  s.version     = JrJade::VERSION
   s.authors     = ["Guy Boertje"]
   s.email       = ["guyboertje@gmail.com"]
   s.homepage    = "https://github.com/guyboertje/jrjade"

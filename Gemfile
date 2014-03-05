@@ -4,3 +4,4 @@ source "http://rubygems.org"
 
 gem 'tilt'
 
+gem 'slim'
