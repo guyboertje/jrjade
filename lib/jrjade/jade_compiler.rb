@@ -5,9 +5,18 @@ module JrJade
   class JadeCompiler
     attr_reader :pretty
 
-    Exmap = [ "*:++:*", "+:*", "*:+", "%(*", "*)%" ]
-    Exre = Regexp.new(Exmap.map { |x| Regexp.escape(x) }.join('|'))
-    Exer = %r[\*(\d+)\^(\s*)\+\:\*\^\1\*]
+    # Exmap = [ "*:++:*", "+:*", "*:+" ]
+    Excre = %r{%\(\*(.*?)\*\)%}
+    Exscc = "*:++:*"
+    Expcs = "+:*"
+    Exscp = "*:+"
+    Exmap = [ Exscc, Expcs, Exscp ]
+    Exsis = "; "
+    Exbis = "]; "
+
+    Exre  = Regexp.new(Exmap.map { |x| Regexp.escape(x) }.join('|'))
+    Exer  = %r[\*(\d+)\^(\s*)\+\:\*\^\1\*]
+    Exmer = "\\2]; "
     Excaret = %r[\^\d+\*]
     Exstar = %r[\*\d+\^]
 
@@ -20,7 +29,7 @@ module JrJade
     end
 
     def convert
-      staged = @raw.gsub(Exer, '\2]; ').gsub(Exre, @exmap).gsub(Excaret, "").gsub(Exstar, @exstar)
+      staged = @raw.gsub(Exer, Exmer).gsub(Excre, @excma).gsub(Exre, @exmap).gsub(Excaret, "").gsub(Exstar, @exstar)
       @out_pre + staged + @out_suf
     end
 
@@ -61,21 +70,14 @@ module JrJade
       Jade4J.getTemplate(@path)
     end
 
-
     def substitutions_built?
       @substitutions_built
     end
 
     def build_substitutions
-      @exmap = {
-        "*:++:*" => "; ",
-        "+:*" => "]; ",
-        "*:+" => "; #{@outvar}.concat %Q[",
-        "%(*" => "]; #{@outvar}.concat((",
-        "*)%" => ").to_s); #{@outvar}.concat %Q["
-      }
+      @exmap = Hash[ Exmap.zip([Exsis,Exbis, "; #{@outvar}.concat %Q["]) ]
       @exstar = "]; end;  #{@outvar}.concat %Q["
-
+      @excma = "]; #{@outvar}.concat((\\1).to_s); #{@outvar}.concat %Q["
       @out_pre = "#{@outvar}=''; #{@outvar}.concat %Q["
       @out_suf = "]; #{@outvar}"
 
