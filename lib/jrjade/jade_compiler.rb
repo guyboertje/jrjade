@@ -5,8 +5,7 @@ module JrJade
   class JadeCompiler
     attr_reader :pretty
 
-    # Exmap = [ "*:++:*", "+:*", "*:+" ]
-    Excre = %r{%\(\*(.*?)\*\)%}
+    Excre = %r{%\(\*=?(.*?)\*\)%}
     Exscc = "*:++:*"
     Expcs = "+:*"
     Exscp = "*:+"

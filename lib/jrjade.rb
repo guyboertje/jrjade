@@ -3,8 +3,7 @@ unless RUBY_PLATFORM =~ /java/
   exit 255
 end
 
-# require_relative "jars/jade4j-0.4.1.jar"
-require "jars/jade4j-0.4.1-SNAPSHOT.jar"
+require "jars/jade4j-0.4.2-SNAPSHOT.jar"
 
 require "jrjade/version"
 require "jrjade/jade_compiler"
