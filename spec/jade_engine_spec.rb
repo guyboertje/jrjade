@@ -35,5 +35,13 @@ describe "JrJade::JadeEngine" do
       compare.must_equal JrJade.read_file('view.html').strip.squeeze(" ")
     end
 
+    it "renders the-kitchen-sink jade template file with mixins, includes and variables" do
+      path = JrJade.resource_file('view_ks.jade')
+      options = {pretty: true, path: path}
+      output = @klass.new(nil, nil, options).result(Context.get_binding)
+      # puts output
+      compare = output.squeeze(" ")
+      compare.must_equal JrJade.read_file('view_ks.html').strip.squeeze(" ")
+    end
   end
 end

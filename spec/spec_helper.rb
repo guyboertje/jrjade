@@ -7,24 +7,33 @@ require 'minitest/pride'
 
 require_relative '../lib/jrjade'
 
-
 Itemish = Struct.new(:name, :current, :url)
 
+class Exhib
+  def label(num) "something #{num}"; end
+  def class_for(num) "line-#{num}"; end
+  def url() "some/path/to/resource"; end
+end
+
 module Context
-  def self.header
-    "Colors"
-  end
-  def self.item
+  extend self
+
+  def header() "Colors"; end
+  def item
     [
       Itemish.new("red", true, "#red"),
       Itemish.new("green", false, "#green"),
       Itemish.new("blue", false, "#blue"),
     ]
   end
+  def exhibit() Exhib.new; end
+  def foo() "FOO"; end
+  def bar() "BAR"; end
+  def baz() "BAZ"; end
+  def fool() "/foo"; end
+  def i() 4; end
 
-  def self.get_binding
-    return binding
-  end
+  def get_binding() binding; end
 end
 
 module JrJade
