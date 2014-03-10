@@ -5,8 +5,9 @@ JRuby wrapper for Jade4j with Tilt template
 
 I have modified the original jade4j java library to allow for contextual evaluation in ruby
 
-In ```+link(fool, baz)``` the values for fool and baz will be sourced from the ruby context
-In ```p(class=quux)= foo``` the values for quux and foo
+In ```+link(fool, baz)``` the values for fool and baz are sourced from the ruby context.
+
+In ```p(class=quux)= foo``` the values for quux and foo are sourced from the ruby context.
 
 example template:
 ```jade
