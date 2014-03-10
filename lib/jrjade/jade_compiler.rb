@@ -23,7 +23,11 @@ module JrJade
       @pretty = options.fetch(:pretty, true)
       @path = options[:path]
       @substitutions_built = false
-      @raw = Jade4J.render(template(src), @pretty, true)
+      if json = options[:json] && json.is_a?(Hash)
+        @raw = Jade4J.render(template(src), json.to_java, @pretty, true)
+      else
+        @raw = Jade4J.render(template(src), @pretty, true)
+      end
       ensure_outvar(options[:outvar])
     end
 
