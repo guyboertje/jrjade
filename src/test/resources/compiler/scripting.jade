@@ -1,0 +1,31 @@
+mixin link(href, name)
+  a(href=href)= name
+
+h1 Hello World!
+// link to fool and baz
++link(fool, baz)
+p.
+  Get on it
+:markdown
+  # Markdown
+ul.class-top
+  li.blat= baz
+- i.times do |n|
+  - quux = exhibit.class_for(n)
+  p(class=quux)= foo
+  a(href=exhibit.url) blue
+  a(href='/green') green
+  - if n == 2
+    p= bar
+  - elsif n == 3
+    .three THREE #{n}
+    .three THREE !{n}
+  - else
+    .elsie ELSIE
+    +link('/elsie', 'Click #{bar}')
+- qua = exhibit.label(i)
+- qub = exhibit.label(i.succ)
+h2= qua
+h2= qub
+h3!= Time.now.strftime("%F %R")
+include includes/sub/a

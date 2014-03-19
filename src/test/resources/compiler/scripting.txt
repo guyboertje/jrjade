@@ -1,0 +1,27 @@
+<h1>Hello World!</h1>
+<!--link to fool and baz-->
+<a href="%(*=fool*)%">%(*=baz*)%</a>
+<p>Get on it</p><h1>Markdown</h1>
+<ul class="class-top">
+  <li class="blat">%(*=baz*)%</li>
+</ul>+:*^0*i.times do |n|*:++:*quux = exhibit.class_for(n)*:+
+  <p class="%(*=quux*)%">%(*=foo*)%</p>
+  <a href="%(*=exhibit.url*)%">blue</a>
+  <a href="/green">green</a>+:*^1*if n == 2*:+
+    <p>%(*=bar*)%</p>*1^
+  +:*^1*elsif n == 3*:+
+    <div class="three">THREE %(*=n*)%</div>
+    <div class="three">THREE %(*n*)%</div>*1^
+  +:*^1*else*:+
+    <div class="elsie">ELSIE</div>
+    <a href="/elsie">Click %(*=bar*)%</a>*1^
+  *0^
++:*qua = exhibit.label(i)*:++:*qub = exhibit.label(i.succ)*:+
+<h2>%(*=qua*)%</h2>
+<h2>%(*=qub*)%</h2>
+<h3>%(*Time.now.strftime("%F %R")*)%</h3>
+<div>a</div>
+<div>b</div>
+<div>c</div>
+<div>d</div>
+<div>e</div>
