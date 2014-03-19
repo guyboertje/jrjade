@@ -23,11 +23,7 @@ module JrJade
       @pretty = options.fetch(:pretty, true)
       @path = options[:path]
       @substitutions_built = false
-      if json = options[:json] && json.is_a?(Hash)
-        @raw = Jade4J.render(template(src), json.to_java, @pretty, true)
-      else
-        @raw = Jade4J.render(template(src), @pretty, true)
-      end
+      @raw = Jade4J.render(template(src), @pretty, true)
       ensure_outvar(options[:outvar])
     end
 
@@ -43,8 +39,7 @@ module JrJade
 
     def ensure_outvar(outvar)
       return true if substitutions_built? && @outvar == outvar
-      @outvar = outvar || '_jadeout'
-      build_substitutions
+      set_outvar outvar || '_jadeout'
       false
     end
 
