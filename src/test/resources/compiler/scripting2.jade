@@ -1,0 +1,18 @@
+- if exhibit.allowed?
+    p IF 0
+    - i.times do |n|
+        p DO 1
+        - if n == 2
+            p IF 2
+        - elsif n == 3
+            p ELSIF 2
+        - else
+            p ELSE 2
+
+    - if ex.present?
+        p IF 1
+    - else
+        p ELSE 1
+  
+- else
+    p ELSE 0

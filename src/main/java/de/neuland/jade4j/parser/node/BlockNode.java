@@ -13,6 +13,7 @@ public class BlockNode extends Node {
     private BlockNode yieldBlock;
     private String mode;
 
+    @Override
     public void execute(IndentWriter writer, JadeModel model, JadeTemplate template) throws JadeCompilerException {
         _execute(writer, model, template);
     }

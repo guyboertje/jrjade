@@ -2,72 +2,164 @@ Jade template...
 
 mixin link(href, name)
   a(href=href)= name
+- if exhibit.allowed?
+    h1 Hello World!
+    // link to fool and baz
+    +link(fool, baz)
+    p.
+      Get on it
+    :markdown
+      # Markdown
+    ul.class-top
+      li.blat= baz
+    - i.times do |n|
+      - quux = exhibit.class_for(n)
+      p(class=quux)= foo
+      a(href=exhibit.url) blue
+      a(href='/green') green
+      - if n == 2
+        p= bar
+      - elsif n == 3
+        .three THREE #{n}
+        .three THREE !{n}
+      - else
+        .elsie ELSIE
+        +link('/elsie', 'Click #{bar}')
+    - qua = exhibit.label(i)
+    - qub = exhibit.label(i.succ)
+    h2= qua
+    h2= qub
+    - if ex.present?
+      p.pres
+    - else
+      p.not-pres
+    h3!= Time.now.strftime("%F %R")
+    include includes/sub/a
+- else
+  p.blocked Access denied
+
+Gives
   
-h1 Hello World!
-+link('/foo', baz)
-ul.class-top
-  li.blat= baz
-- i.times do |n|
-  - quux = exhibit.class_for(n)
-  p(class=quux)= foo
-  - if n == 2
-    p= bar
-  - elsif n == 3
-    .three THREE #{n}
-  - else
-    .elsie ELSIE
-    +link('/elsie', 'Clink heare')
-- qua = exhibit.label(i)
-- qub = exhibit.label(i.succ)
-h2= qua
-h2= qub
+]; ;;0; if exhibit.allowed? ;0;; ; j_j.concat %Q[
+  <h1>Hello World!</h1>
+  <!--link to fool and baz-->
+  <a href="]; j_j.concat((fool).to_s); j_j.concat %Q[">]; j_j.concat((baz).to_s); j_j.concat %Q[</a>
+  <p>Get on it</p><h1>Markdown</h1>
+  <ul class="class-top">
+    <li class="blat">]; j_j.concat((baz).to_s); j_j.concat %Q[</li>
+  </ul>]; ;;1; i.times do |n| ;1;; ; j_j.concat %Q[]; quux = exhibit.class_for(n) ;2;; ; j_j.concat %Q[
+    <p class="]; j_j.concat((quux).to_s); j_j.concat %Q[">]; j_j.concat((foo).to_s); j_j.concat %Q[</p>
+    <a href="]; j_j.concat((exhibit.url).to_s); j_j.concat %Q[">blue</a>
+    <a href="/green">green</a>]; ;;2; if n == 2 ;2;; ; j_j.concat %Q[
+      <p>]; j_j.concat((bar).to_s); j_j.concat %Q[</p>]; ;;2;; j_j.concat %Q[
+    ]; ;;2; elsif n == 3 ;2;; ; j_j.concat %Q[
+      <div class="three">THREE ]; j_j.concat((n).to_s); j_j.concat %Q[</div>
+      <div class="three">THREE ]; j_j.concat((n).to_s); j_j.concat %Q[</div>]; ;;2;; j_j.concat %Q[
+    ]; ;;2; else ;2;; ; j_j.concat %Q[
+      <div class="elsie">ELSIE</div>
+      <a href="/elsie">Click ]; j_j.concat((bar).to_s); j_j.concat %Q[</a>]; ;;2;; j_j.concat %Q[
+    ]; ;;1;; j_j.concat %Q[
+  ]; qua = exhibit.label(i) ;1;; ; j_j.concat %Q[]; qub = exhibit.label(i.succ) ;1;; ; j_j.concat %Q[
+  <h2>]; j_j.concat((qua).to_s); j_j.concat %Q[</h2>
+  <h2>]; j_j.concat((qub).to_s); j_j.concat %Q[</h2>]; ;;1; if ex.present? ;1;; ; j_j.concat %Q[
+    <p class="pres"></p>]; ;;1;; j_j.concat %Q[
+  ]; ;;1; else ;1;; ; j_j.concat %Q[
+    <p class="not-pres"></p>]; ;;1;; j_j.concat %Q[
+  
+  <h3>]; j_j.concat((Time.now.strftime("%F %R")).to_s); j_j.concat %Q[</h3>
+  <div>a</div>
+  <div>b</div>
+  <div>c</div>
+  <div>d</div>
+  <div>e</div>]; ;;0;; j_j.concat %Q[
+]; ;;0; else ;0;; ; j_j.concat %Q[
+  <p class="blocked">Access denied</p>]; ;;0;; j_j.concat %Q[];
 
-<h1>Hello World!</h1>
-<a href="%(*fool*)%">%(*baz*)%</a>
-<ul class="class-top">
-  <li class="blat">%(*baz*)%</li>
-</ul>+:*^0*i.times do |n|*:++:*quux = exhibit.class_for(n)*:+
-  <p class="quux">%(*foo*)%</p>+:*^1*if n == 2*:+
-    <p>%(*bar*)%</p>*1^
-  +:*^1*elsif n == 3*:+
-    <div class="three">THREE #{n}</div>*1^
-  +:*^1*else*:+
-    <div class="elsie">ELSIE</div>
-    <a href="/elsie">Clink heare</a>*1^
-  *0^
-+:*qua = exhibit.label(i)*:++:*qub = exhibit.label(i.succ)*:+
-<h2>%(*qua*)%</h2>
-<h2>%(*qub*)%</h2>
+;;0; if exhibit.allowed?;
+  0.1
+  ;;1; i.times do |n|;
+    1
+    ;;2; if n == 2;
+      2.0
+    ;2;;
+    ;;2; elsif n == 3;
+      2.1
+    ;2;;
+    ;;2; else;
+      2.2
+    ;2;;
+  ;1;; 
+  ;;1; if ex.present?;
+    1.1
+  ;1;;
+  ;;1; else;
+    1.2
+  ;1;;
+;0;;
+;;0; else; 
+  0.2
+;0;; ;
+;;0; i.times do |n|; puts n; ;0;; ;;0; if exhibit.allowed?; 0.1 ;0;; ;;0; else; 0.2 ;0;; ;
 
-j_j='';
-j_j.concat %Q[<h1>Hello World!</h1><a href="];
-j_j.concat((fool).to_s);
-j_j.concat %Q[">];
-j_j.concat((baz).to_s);
-j_j.concat %Q[</a><ul class="class-top">  <li class="blat">];
-j_j.concat((baz).to_s);
-j_j.concat %Q[</li></ul>];
-i.times do |n|;
-  quux = exhibit.class_for(n);
-  j_j.concat %Q[<p class="quux">];
-  j_j.concat((foo).to_s);
-  j_j.concat %Q[</p>];
-  if n == 2;
-    j_j.concat %Q[    <p>];
-    j_j.concat((bar).to_s);
-    j_j.concat %Q[</p>*1^];
-  elsif n == 3;
-    j_j.concat %Q[    <div class="three">THREE #{n}</div>*1^];
-  else;
-    j_j.concat %Q[    <div class="elsie">ELSIE</div>    <a href="/elsie">Clink heare</a>*1^
-  *0^
-];
- qua = exhibit.label(i);
- qub = exhibit.label(i.succ);
- j_j.concat %Q[<h2>];
- j_j.concat((qua).to_s);
- j_j.concat %Q[</h2><h2>];
- j_j.concat((qub).to_s);
- j_j.concat %Q[</h2>]; j_j
-
-
+  class Regexes
+  def level(n)
+    @num = n
+  end
+  def untreated_if
+    @luu[@num]
+  end
+  def parts
+    @lup[@num]
+  end
+  def for_ifelse
+    @lui[@num]
+  end
+  def for_rest
+    @lud[@num]
+  end
+  def choose(str)
+    str =~ untreated_if ? for_ifelse : for_rest
+  end
+  def for_end
+    @lue[@num]
+  end
+  def for_all
+    @lua[@num]
+  end
+  def initialize(num)
+    @num = 0
+    @lup ||= Hash[
+      0, /;;0;.+;0;;/m, 1, /;;1;.+;1;;/m,
+      2, /;;2;.+;2;;/m, 3, /;;3;.+;3;;/m
+    ].tap do |h|
+      h.default_proc = proc { |z, k| /;;#{k};.+;#{k};;/m }
+    end
+    @lui ||= Hash[
+      0, /;;0;\s*if.+els(e|if).+?;0;;/m, 1, /;;1;\s*if.+els(e|if).+?;1;;/m,
+      2, /;;2;\s*if.+els(e|if).+?;2;;/m, 3, /;;3;\s*if.+els(e|if).+?;3;;/m
+    ].tap do |h|
+      h.default_proc = proc { |z, k| /;;#{k};\s*if.+els(e|if).+?;#{k};;/m }
+    end
+    @lud ||= Hash[
+      0, /;;0;.+?;0;;/m, 1, /;;1;.+?;1;;/m,
+      2, /;;2;.+?;2;;/m, 3, /;;3;.+?;3;;/m
+    ].tap do |h|
+      h.default_proc = proc { |z, k| /;;#{k};.+?;#{k};;/m }
+    end
+    @lue ||= Hash[
+      0, /;0;;\z/m, 1, /;1;;\z/m, 2, /;2;;\z/m, 3, /;3;;\z/m,
+    ].tap do |h|
+      h.default_proc = proc { |z, k| /;#{n};;\z/m }
+    end
+    @lua ||= Hash[
+      0, /;;0;|;0;;/, 1, /;;1;|;1;;/, 2, /;;2;|;2;;/, 3, /;;3;|;3;;/
+    ].tap do |h|
+      h.default_proc = proc { |z, k| /;;#{n};|;#{n};;/ }
+    end
+    @luu ||= Hash[
+      0, /;;0;\s*if/, 1, /;;1;\s*if/, 2, /;;2;\s*if/, 3, /;;3;\s*if/, 
+    ].tap do |h|
+      h.default_proc = proc { |z, k| /;;#{n};\s*if/ }
+    end
+  end
+end

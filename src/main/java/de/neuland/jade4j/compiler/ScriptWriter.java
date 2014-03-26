@@ -23,69 +23,71 @@ public class ScriptWriter extends BaseWriter {
     }
 
     public String wrapForInsert(String string) {
-        return "%(*" + string + "*)%";
+        return "]; j_j.concat((" + string + ").to_s); j_j.concat %Q[";
     }
 
     public String wrapForEscapedValue(String string) {
-        return "%(*=" + string + "*)%";
+        return "]; j_j.concat((" + string + ").to_s); j_j.concat %Q[";
     }
 
     public String wrapForEscapedAttribute(String string) {
-        return "%(*=" + string + "*)%";
+        return "]; j_j.concat((" + string + ").to_s); j_j.concat %Q[";
     }
 
-    public String prefixForEscape(String string) {
-        return "~~~" + string;
-    }
-    
     public ScriptWriter insert(String string) {
-        write("%(*");
+        write("]; j_j.concat((");
         return _insert(string);
     }
 
     public ScriptWriter escapedInsert(String string) {
-        write("%(*=");
+        write("]; j_j.concat((");
         return _insert(string);
     }
 
     private ScriptWriter _insert(String string) {
         write(string);
-        write("*)%");
+        write(").to_s); j_j.concat %Q[");
         return this;
     }
 
     public ScriptWriter express(String string, boolean block) {
-        write("+:*");
+        write("]; ");
         if (block) {
-            write("^");
+            write(";;");
             write(Integer.toString(indent));
-            write("*");
+            write("; ");
         }
         write(string);
-        write("*:+");
+        write("; j_j.concat %Q[");
         return this;
     }
 
+//    keep original
+//    public ScriptWriter express(String string, boolean block) {
+//        write("]; ");
+//        if (block) {
+//            write(";;");
+//            write(Integer.toString(indent));
+//            write("; ");
+//         }
+//        write(string);
+//        write(" ;");
+//        write(Integer.toString(indent));
+//        write(";; ");
+//        write("; j_j.concat %Q[");
+//        return this;
+//    }
     public ScriptWriter concat(String string) {
         write(string);
         return this;
     }
 
-    public ScriptWriter beginAppend() {
-        write("+.*");
-        return this;
-    }
-
-    public ScriptWriter endAppend() {
-        write("*;+");
-        return this;
-    }
-
     public void decr() {
         indent--;
-        write("*");
+        write("]; ");
+        write(";");
         write(Integer.toString(indent));
-        write("^");
+        write(";; j_j.concat %Q[");
     }
 
 }
