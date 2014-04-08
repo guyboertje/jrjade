@@ -40,12 +40,35 @@ def parse
   <p class="blocked">Access denied</p>]; ;0;;  j_j;
   }
 
-  inner_most = str.scan(/;;\d+;/).max[/\d/].to_i
-  inner_most.downto(0) do |n|
-    rex = Regexes.new(n)
-    str = treat(str, rex)
+  levels = str.scan(/;;(\d+);/).flatten.compact.sort.uniq
+  treat(str, levels)
+end
+
+def treat(str, levels)
+  sl = levels.shift
+  level = sl.to_i
+  rex = Regexes.new(level)
+  parts = str.partition(rex.parts)
+  if levels.size > 0
+    # binding.pry
+    parts[1] = treat(parts[1], levels)
   end
-  str
+  parts[1] = __treat(parts[1], rex)
+  # binding.pry
+  parts.join
+end
+
+def __treat(subj, rex)
+  looping = 0
+  while !parses?(subj) do
+    fail "Unable to parse template" if looping > 99
+    looping += 1
+    re = rex.choose(subj)
+    pieces = subj.partition(re)
+    pieces[1].sub!(rex.for_end, 'end;').gsub!(rex.for_all, '')
+    subj = pieces.join
+  end
+  subj
 end
 
 class Regexes
@@ -75,23 +98,6 @@ class Regexes
   end
 end
 
-def treat(str, rex)
-  parts = str.partition(rex.parts)
-  subj = parts[1]
-  looping = 0
-  while !parses?(subj) do
-    fail "Unable to parse template" if looping > 99
-    looping += 1
-    re = rex.choose(subj)
-    # binding.pry
-    pieces = subj.partition(re)
-    pieces[1].sub!(rex.for_end, 'end;').gsub!(rex.for_all, '')
-    subj = pieces.join
-  end
-  # binding.pry
-  parts[0] + subj.gsub(rex.for_all, '') + parts[2]
-end
-
 def parses?(str)
   !!Ripper::SexpBuilder.parse(str)
 end
@@ -111,5 +117,5 @@ fool = "/foo"
 ex = 3
 i = 4
 
-# puts parse
-puts Kernel.eval(parse())
+puts parse
+# puts Kernel.eval(parse())

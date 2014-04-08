@@ -23,30 +23,30 @@ public class ScriptWriter extends BaseWriter {
     }
 
     public String wrapForInsert(String string) {
-        return "]; j_j.concat((" + string + ").to_s); j_j.concat %Q[";
+        return "]; @j_j.concat((" + string + ").to_s); @j_j.concat %Q[";
     }
 
     public String wrapForEscapedValue(String string) {
-        return "]; j_j.concat((" + string + ").to_s); j_j.concat %Q[";
+        return "]; @j_j.concat((" + string + ").to_s); @j_j.concat %Q[";
     }
 
     public String wrapForEscapedAttribute(String string) {
-        return "]; j_j.concat((" + string + ").to_s); j_j.concat %Q[";
+        return "]; @j_j.concat((" + string + ").to_s); @j_j.concat %Q[";
     }
 
     public ScriptWriter insert(String string) {
-        write("]; j_j.concat((");
+        write("]; @j_j.concat((");
         return _insert(string);
     }
 
     public ScriptWriter escapedInsert(String string) {
-        write("]; j_j.concat((");
+        write("]; @j_j.concat((");
         return _insert(string);
     }
 
     private ScriptWriter _insert(String string) {
         write(string);
-        write(").to_s); j_j.concat %Q[");
+        write(").to_s); @j_j.concat %Q[");
         return this;
     }
 
@@ -58,7 +58,7 @@ public class ScriptWriter extends BaseWriter {
             write("; ");
         }
         write(string);
-        write("; j_j.concat %Q[");
+        write("; @j_j.concat %Q[");
         return this;
     }
 
@@ -74,7 +74,7 @@ public class ScriptWriter extends BaseWriter {
 //        write(" ;");
 //        write(Integer.toString(indent));
 //        write(";; ");
-//        write("; j_j.concat %Q[");
+//        write("; @j_j.concat %Q[");
 //        return this;
 //    }
     public ScriptWriter concat(String string) {
@@ -87,7 +87,7 @@ public class ScriptWriter extends BaseWriter {
         write("]; ");
         write(";");
         write(Integer.toString(indent));
-        write(";; j_j.concat %Q[");
+        write(";; @j_j.concat %Q[");
     }
 
 }

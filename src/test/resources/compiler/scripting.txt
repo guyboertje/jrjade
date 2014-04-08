@@ -1,27 +1,34 @@
-<h1>Hello World!</h1>
-<!--link to fool and baz-->
-<a href="%(*=fool*)%">%(*=baz*)%</a>
-<p>Get on it</p><h1>Markdown</h1>
-<ul class="class-top">
-  <li class="blat">%(*=baz*)%</li>
-</ul>+:*^0*i.times do |n|*:++:*quux = exhibit.class_for(n)*:+
-  <p class="%(*=quux*)%">%(*=foo*)%</p>
-  <a href="%(*=exhibit.url*)%">blue</a>
-  <a href="/green">green</a>+:*^1*if n == 2*:+
-    <p>%(*=bar*)%</p>*1^
-  +:*^1*elsif n == 3*:+
-    <div class="three">THREE %(*=n*)%</div>
-    <div class="three">THREE %(*n*)%</div>*1^
-  +:*^1*else*:+
-    <div class="elsie">ELSIE</div>
-    <a href="/elsie">Click %(*=bar*)%</a>*1^
-  *0^
-+:*qua = exhibit.label(i)*:++:*qub = exhibit.label(i.succ)*:+
-<h2>%(*=qua*)%</h2>
-<h2>%(*=qub*)%</h2>
-<h3>%(*Time.now.strftime("%F %R")*)%</h3>
-<div>a</div>
-<div>b</div>
-<div>c</div>
-<div>d</div>
-<div>e</div>
+]; ;;0; if exhibit.allowed?; @j_j.concat %Q[
+  <h1>Hello World!</h1>
+  <!--link to fool and baz-->
+  <a href="]; @j_j.concat((fool).to_s); @j_j.concat %Q[">]; @j_j.concat((baz).to_s); @j_j.concat %Q[</a>
+  <p>Get on it</p><h1>Markdown</h1>
+  <ul class="class-top">
+    <li class="blat">]; @j_j.concat((baz).to_s); @j_j.concat %Q[</li>
+  </ul>]; ;;1; i.times do |n|; @j_j.concat %Q[]; quux = exhibit.class_for(n); @j_j.concat %Q[
+    <p class="]; @j_j.concat((quux).to_s); @j_j.concat %Q[">]; @j_j.concat((foo).to_s); @j_j.concat %Q[</p>
+    <a href="]; @j_j.concat((exhibit.url).to_s); @j_j.concat %Q[">blue</a>
+    <a href="/green">green</a>]; ;;2; if n == 2; @j_j.concat %Q[
+      <p>]; @j_j.concat((bar).to_s); @j_j.concat %Q[</p>]; ;2;; @j_j.concat %Q[
+    ]; ;;2; elsif n == 3; @j_j.concat %Q[
+      <div class="three">THREE ]; @j_j.concat((n).to_s); @j_j.concat %Q[</div>
+      <div class="three">THREE ]; @j_j.concat((n).to_s); @j_j.concat %Q[</div>]; ;2;; @j_j.concat %Q[
+    ]; ;;2; else; @j_j.concat %Q[
+      <div class="elsie">ELSIE</div>
+      <a href="/elsie">Click ]; @j_j.concat((bar).to_s); @j_j.concat %Q[</a>]; ;2;; @j_j.concat %Q[
+    ]; ;1;; @j_j.concat %Q[
+  ]; qua = exhibit.label(i); @j_j.concat %Q[]; qub = exhibit.label(i.succ); @j_j.concat %Q[
+  <h2>]; @j_j.concat((qua).to_s); @j_j.concat %Q[</h2>
+  <h2>]; @j_j.concat((qub).to_s); @j_j.concat %Q[</h2>]; ;;1; if ex.present?; @j_j.concat %Q[
+    <p class="pres"></p>]; ;1;; @j_j.concat %Q[
+  ]; ;;1; else; @j_j.concat %Q[
+    <p class="not-pres"></p>]; ;1;; @j_j.concat %Q[
+  
+  <h3>]; @j_j.concat((Time.now.strftime("%F %R")).to_s); @j_j.concat %Q[</h3>
+  <div>a</div>
+  <div>b</div>
+  <div>c</div>
+  <div>d</div>
+  <div>e</div>]; ;0;; @j_j.concat %Q[
+]; ;;0; else; @j_j.concat %Q[
+  <p class="blocked">Access denied</p>]; ;0;; @j_j.concat %Q[

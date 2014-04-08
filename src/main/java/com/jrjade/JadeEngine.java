@@ -5,10 +5,11 @@
  */
 package com.jrjade;
 
-import java.io.IOException;
 import org.jruby.Ruby;
+import org.jruby.RubyBinding;
 import org.jruby.RubyClass;
 import org.jruby.RubyHash;
+import org.jruby.RubyKernel;
 import org.jruby.RubyObject;
 import org.jruby.RubyString;
 import org.jruby.RubySymbol;
@@ -30,99 +31,101 @@ public class JadeEngine extends RubyObject {
     private IRubyObject safeLevel;
     private IRubyObject outvar;
     private IRubyObject src;
-    
-    private JadeBaseCompiler compiler;
+
+    private JadeCompiler compiler;
 
     public JadeEngine(final Ruby runtime, RubyClass rubyClass) {
         super(runtime, rubyClass);
     }
 
     @JRubyMethod(name = "new", required = 1, optional = 2, meta = true)
-    public static JadeEngine newInstance(ThreadContext context, IRubyObject self, IRubyObject[] args) {
+    public static JadeEngine newInstance(IRubyObject self, IRubyObject[] args) {
         JadeEngine engine = (JadeEngine) ((RubyClass) self).allocate();
         engine.callInit(args, Block.NULL_BLOCK);
         return engine;
     }
 
     @JRubyMethod(required = 1, optional = 2, visibility = Visibility.PRIVATE)
-    public void initilize(ThreadContext context, IRubyObject[] args) {
-        final Ruby ruby = context.getRuntime();
-        
-        src = ruby.getNil();
+    public void initialize(ThreadContext context, IRubyObject[] args) {
 
-        IRubyObject pretty;
+        src = context.nil;
         IRubyObject string = args[0];
 
-        safeLevel = args.length > 1 ? args[1] : ruby.getNil();
+        safeLevel = args.length > 1 ? args[1] : context.nil;
 
         RubyHash options = (args.length > 2 && args[2] instanceof RubyHash)
-                ? (RubyHash) args[2] : RubyHash.newSmallHash(ruby);
+                ? (RubyHash) args[2] : RubyHash.newSmallHash(context.runtime);
 
-        outvar = options.op_aref(context, asSym(ruby, "outvar"));
-        filename = options.op_aref(context, asSym(ruby, "path"));
-        pretty = options.op_aref(context, asSym(ruby, "pretty"));
-        compiler = isGiven(filename)
-                ? new JadeFileCompiler(filename.toString())
-                : new JadeStringCompiler(string.toString());
-        try {
-            compiler.setPretty(
-                    isGiven(pretty) ? pretty.isTrue() : true
-            );
-        } catch (IOException e) {
-            throw ruby.newIOErrorFromException(e);
-        }
-        compiler.setOutvar(
-                isGiven(outvar) ? outvar.toString() : "_jadeout"
-        );
+        compiler = new JadeCompiler(context.runtime, context.runtime.getModule("JrJade").getClass("JadeCompiler"));
+        compiler.useOptions(context, string, options);
     }
-    
+
     @JRubyMethod(name = "src")
     public IRubyObject getSrc(ThreadContext context) {
         if (src.isNil()) {
-            try {
-               src = rubyString(context, compiler.convert()); 
-            } catch (IOException e) {
-                context.getRuntime().newIOErrorFromException(e);
-            }
+            src = compiler.convert(context);
         }
         return src;
     }
 
     @JRubyMethod(meta = true, required = 1, optional = 1)
     public static RubyString render(final ThreadContext context, IRubyObject self, IRubyObject[] args) {
-        final Ruby ruby = context.getRuntime();
+
         IRubyObject string = args[0];
-        RubyHash options = RubyHash.newSmallHash(ruby);
+        RubyHash options = RubyHash.newSmallHash(context.runtime);
         if (args.length > 1) {
             options = args[1].convertToHash();
         }
-        IRubyObject level = options.op_aref(context, toSym(ruby, "safe_level"));
+        IRubyObject level = options.op_aref(context, toSym(context.runtime, "safe_level"));
 
-        JadeEngine instance = (JadeEngine) newInstance(context, self,
+        JadeEngine instance = (JadeEngine) newInstance(self,
                 new IRubyObject[]{string, level, options}
         );
+        
+        IRubyObject[] rargs = {(IRubyObject) context.nil};
 
-        return instance.result(context);
+        return instance.result(context, rargs);
+    }
+    
+    @JRubyMethod(optional = 1)
+    public RubyString result(ThreadContext context, IRubyObject[] args) {
+        RubyBinding binding;
+        RubyString _result;
+        if (args[0] instanceof RubyBinding) {
+            binding = (RubyBinding) args[0];
+        } else {
+            binding = newTopLevel(context);
+        }
+        if (safeLevel != context.nil) {
+            throw context.runtime.newNotImplementedError("safe_level not implemented yet");
+        } else {
+            IRubyObject _src = getSrc(context);
+            IRubyObject[] kargs = {_src, (IRubyObject) binding};
+            
+            _result = RubyKernel.eval(context, this, kargs, Block.NULL_BLOCK).convertToString();
+        }
+        return _result;
     }
 
-    public RubyString result(ThreadContext context) {
-        return rubyString(context, "");
+    @JRubyMethod(name = "set_outvar")
+    public IRubyObject setOutvar(ThreadContext context, RubyString outvar) {
+        this.outvar = outvar;
+        compiler.setOutvar(context, outvar);
+        src = compiler.convert(context);
+        return context.nil;
     }
 
-    private static boolean isGiven(IRubyObject val) {
-        return !val.isNil();
+    @JRubyMethod
+    public RubyString template() {
+        return src.convertToString();
     }
 
     private static RubySymbol toSym(Ruby runtime, String string) {
         return runtime.newSymbol(string);
     }
 
-    private RubySymbol asSym(Ruby runtime, String string) {
-        return runtime.newSymbol(string);
-    }
-
-    private RubyString rubyString(ThreadContext context, String string) {
-        return RubyUtils.rubyString(context.getRuntime(), string);
+    private RubyBinding newTopLevel(ThreadContext context) {
+        return (RubyBinding) context.runtime.fetchGlobalConstant("TOPLEVEL_BINDING").dup();
     }
 
 }

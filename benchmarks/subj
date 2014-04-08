@@ -1,0 +1,20 @@
+
+[1mFrom:[0m /home/guy/dev/jrjade/benchmarks/parsej.rb @ line 80 Object#__treat:
+
+    [1;34m70[0m: [32mdef[0m [1;34m__treat[0m(subj, rex)
+    [1;34m71[0m:   looping = [1;34m0[0m
+    [1;34m72[0m:   [32mwhile[0m !parses?(subj) [32mdo[0m
+    [1;34m73[0m:     fail [31m[1;31m"[0m[31mUnable to parse template[1;31m"[0m[31m[0m [32mif[0m looping > [1;34m99[0m
+    [1;34m74[0m:     looping += [1;34m1[0m
+    [1;34m75[0m:     re = rex.choose(subj)
+    [1;34m76[0m:     pieces = subj.partition(re)
+    [1;34m77[0m:     [32mif[0m pieces[[1;34m1[0m].size > [1;34m0[0m
+    [1;34m78[0m:       pieces[[1;34m1[0m].sub!(rex.for_end, [31m[1;31m'[0m[31mend;[1;31m'[0m[31m[0m).gsub!(rex.for_all, [31m[1;31m'[0m[31m[1;31m'[0m[31m[0m)
+    [1;34m79[0m:     [32melse[0m
+ => [1;34m80[0m:       binding.pry
+    [1;34m81[0m:     [32mend[0m
+    [1;34m82[0m:     subj = pieces.join
+    [1;34m83[0m:   [32mend[0m
+    [1;34m84[0m:   subj
+    [1;34m85[0m: [32mend[0m
+

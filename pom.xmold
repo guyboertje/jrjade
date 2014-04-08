@@ -68,7 +68,7 @@
                         <goal>shade</goal>
                     </goals>
                     <configuration>
-                        <minimizeJar>true</minimizeJar>
+                            <minimizeJar>true</minimizeJar>
                             <filters>
                                 <filter>
                                     <artifact>commons-logging:commons-logging</artifact>
@@ -77,7 +77,7 @@
                                     </includes>
                                 </filter>
                                 <filter>
-                                    <artifact>org.jruby:jruby</artifact>
+                                    <artifact>jruby:*</artifact>
                                     <excludes>
                                         <exclude>**</exclude>
                                     </excludes>
@@ -91,7 +91,8 @@
   </build>
 
   <dependencies>
-    <dependency>      <groupId>org.apache.commons</groupId>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
       <artifactId>commons-jexl</artifactId>
       <version>2.1.1</version>
   </dependency>
@@ -124,7 +125,6 @@
     <groupId>org.jruby</groupId>
     <artifactId>jruby</artifactId>
     <version>1.7.11</version>
-    <scope>provided</scope>
   </dependency>
   
   <!-- Testing -->

@@ -4,7 +4,7 @@ html
     title Simple Benchmark
   body
     h1 = header
-    - unless item.empty?
+    - if !item.empty?
       ul
         - item.each do |i|
           - if i['current']
