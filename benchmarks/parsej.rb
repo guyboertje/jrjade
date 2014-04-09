@@ -117,5 +117,5 @@ fool = "/foo"
 ex = 3
 i = 4
 
-puts parse
-# puts Kernel.eval(parse())
+# puts parse
+puts Kernel.eval(parse())

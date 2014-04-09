@@ -9,9 +9,9 @@ import java.io.IOException;
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
 import org.jruby.RubyClass;
-import org.jruby.RubyFixnum;
 import org.jruby.RubyHash;
 import org.jruby.RubyInteger;
+import org.jruby.RubyNil;
 import org.jruby.RubyObject;
 import org.jruby.RubyRegexp;
 import org.jruby.RubyString;
@@ -25,9 +25,7 @@ import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.runtime.scope.ManyVarsDynamicScope;
-import org.jruby.util.ByteList;
 import org.jruby.util.RegexpOptions;
-import org.jruby.util.ConvertBytes;
 
 /**
  *
@@ -124,49 +122,58 @@ public class JadeCompiler extends RubyObject {
             throw context.runtime.newIOErrorFromException(e);
         }
         raw = "@j_j=''; @j_j.concat %Q[" + output + "]; @j_j";
-        RubyString res = _convert(context, raw);
+        RubyString res = convertLevels(context, raw);
         return res;
     }
 
-    private RubyString _convert(ThreadContext context, String raw) {
+    private RubyString convertLevels(ThreadContext context, String raw) {
         RubyString str = rubyString(context.runtime, raw);
-        IRubyObject[] levels = findLevels(context, str).toJavaArray();
+        RubyArray levels = findLevels(context, str);
 
-        for (IRubyObject o : levels) {
-            RubyString level = (RubyString) o;
-            long l = numberize(context, level).getLongValue();
-            str = treat(context, str, l);
-        }
+        str = treat(context, str, levels);
         if (!outvar.isNil()) {
             str.gsub_bang(context, rubyString(context.runtime, OUTVAR), outvar, Block.NULL_BLOCK);
         }
         return str;
     }
 
-    private RubyString treat(ThreadContext context, RubyString str, long level) {
+    private RubyString treat(ThreadContext context, RubyString str, RubyArray levels) {
+        IRubyObject isl = levels.shift(context);
+        if (isl instanceof RubyNil) {
+            return str;
+        }
+        RubyString sl = (RubyString)isl;
+        long level = numberize(sl).getLongValue();
         LevelRegex rex = new LevelRegex(level);
-        RubyArray parts = (RubyArray) str.partition(context, rex.parts(context.runtime), Block.NULL_BLOCK);
-        System.out.println("-" + level + "- Treat: " + parts.toJavaArray()[2]);
-        RubyFixnum middle = RubyUtils.rubyFixnum(context.runtime, MIDDLE);
-        RubyString subj = (RubyString) parts.aref(middle);
 
+        IRubyObject[] parts = partition(context, str, rex.parts(context.runtime));
+        if (levels.size() > 0) {
+            parts[1] = treat(context, (RubyString) parts[1], levels);
+        }
+        parts[1] = parseTreat(context, (RubyString) parts[1], rex);
+
+        RubyString ret = unpartition(context, parts);
+        return ret;
+    }
+
+    private RubyString parseTreat(ThreadContext context, RubyString subj, LevelRegex rex) {
         int looping = 0;
         while (!parses(context, subj)) {
-            if (looping > 99) {
+            if (looping > 24) {
                 throw context.runtime.newSyntaxError("Unable to parse template section");
             }
-            looping++;
             RubyRegexp re = rex.choose(context.runtime, subj.getBytes());
-            RubyArray pieces = (RubyArray) subj.partition(context, re, Block.NULL_BLOCK);
-            RubyString piece = (RubyString) pieces.aref(middle);
+            IRubyObject[] pieces = partition(context, subj, re);
+
+            RubyString piece = (RubyString) pieces[1];
             piece.sub_bang(context, rex.for_end(context.runtime), rubyString(context.runtime, "end;"), Block.NULL_BLOCK);
             piece.gsub_bang(context, rex.for_all(context.runtime), RubyString.newEmptyString(context.runtime), Block.NULL_BLOCK);
-            pieces.store(MIDDLE, piece);
-            subj = (RubyString) pieces.join(context);
+            pieces[1] = piece;
+
+            subj = unpartition(context, pieces);
+            looping++;
         }
-        parts.store(MIDDLE, subj);
-        RubyString ret = (RubyString) parts.join(context);
-        return ret;
+        return subj;
     }
 
     private boolean parses(ThreadContext context, RubyString subj) {
@@ -180,19 +187,17 @@ public class JadeCompiler extends RubyObject {
     }
 
     private RubyArray findLevels(ThreadContext context, RubyString str) {
-        RubyRegexp regex = RubyRegexp.newRegexp(context.runtime, ";;\\d+;", RegexpOptions.NULL_OPTIONS);
+        RubyRegexp regex = RubyRegexp.newRegexp(context.runtime, ";;(\\d+);", RegexpOptions.NULL_OPTIONS);
         RubyArray arr = (RubyArray) str.scan(context, regex, Block.NULL_BLOCK);
-        arr = (RubyArray) arr.sort(context, Block.NULL_BLOCK);
+        arr = (RubyArray) arr.flatten(context);
         arr = (RubyArray) arr.compact();
-        arr = (RubyArray) arr.reverse();
+        arr = (RubyArray) arr.sort(context, Block.NULL_BLOCK);
         arr = (RubyArray) arr.uniq(context);
         return arr;
     }
 
-    private RubyInteger numberize(ThreadContext context, RubyString str) {
-        ByteList b = str.getByteList();
-        b.view(2, 2);
-        return ConvertBytes.byteListToInum(context.runtime, b, 10, false);
+    private RubyInteger numberize(RubyString str) {
+        return (RubyInteger) str.to_i();
     }
 
     private boolean isGiven(IRubyObject val) {
@@ -205,6 +210,14 @@ public class JadeCompiler extends RubyObject {
 
     private RubyString rubyString(Ruby runtime, String string) {
         return RubyUtils.rubyString(runtime, string);
+    }
+
+    private IRubyObject[] partition(ThreadContext context, RubyString str, RubyRegexp re) {
+        return ((RubyArray) str.partition(context, re, Block.NULL_BLOCK)).toJavaArray();
+    }
+
+    private RubyString unpartition(ThreadContext context, IRubyObject[] parts) {
+        return RubyString.newUTF8String(context.runtime, "").concat(parts[0]).concat(parts[1]).concat(parts[2]);
     }
 
 }
